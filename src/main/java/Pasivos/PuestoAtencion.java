@@ -57,7 +57,7 @@ public class PuestoAtencion {
         Pasaje pasaje = pasajero.getPasaje();
         Terminal terminal = pasaje.getTerminal();
         int puestoE = pasaje.getPuestoEmbarque();
-        System.out.println(Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal + ", adios!");
+        System.out.println(Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", adios!");
         this.avisarPasajeros.release();
     }
 

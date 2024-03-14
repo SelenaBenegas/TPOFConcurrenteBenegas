@@ -50,7 +50,7 @@ public class Aeropuerto {
             switch (this.horaActual) {
                 // El aeropuerto tiene que abrir a las 6
                 case 600:
-                    System.out.println("\"VIAJE BONITO\" COMIENZA SU HORARIO DE ATENCIÓN.");
+                    System.out.println("\u001B[32m" +"\"VIAJE BONITO\" COMIENZA SU HORARIO DE ATENCIÓN." + "\u001B[0m");
                     this.ingresarAeropuerto.lock();
                     atendiendo = true;
                     try {
@@ -61,7 +61,7 @@ public class Aeropuerto {
                     break;
                 // El aeropuerto cierra a las 22
                 case 2200:
-                    System.out.println("\"VIAJE BONITO\" FINALIZA SU HORARIO DE ATENCIÓN.");
+                    System.out.println("\u001B[31m" +"\"VIAJE BONITO\" FINALIZA SU HORARIO DE ATENCIÓN."+ "\u001B[0m");
                     atendiendo = false;
                     break;
                 default:

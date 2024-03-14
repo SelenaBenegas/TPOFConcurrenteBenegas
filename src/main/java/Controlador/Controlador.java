@@ -37,9 +37,11 @@ public class Controlador {
     //Cantidad de recepcionistas en el puesto de informes
     private static final int CANT_RECEPCIONISTASINFORME = 3;
     //Capacidad máxima del freeshop
-    private static final int CAP_FREESHOP = 5; 
+    private static final int CAP_FREESHOP = 5;
+    //Capacidad minima del freeshop
+    private static final int MIN_CAP_FREESHOP = 2;
     //Capacidad máxima del tren
-    private static final int CAP_TREN = 5; 
+    private static final int CAP_TREN = 5;
     //Cantidad de pasajeros que ingresan al aeropuerto
     private static final int CANT_PASAJEROS = 10;
     //Random
@@ -56,9 +58,9 @@ public class Controlador {
 
         //TERMINALES
         Terminal[] terminales = new Terminal[CANT_TERMINALES];
-        for (int i = 0; i < CANT_TERMINALES; i++) {
-            //Nombre de terminal 
-            char nombre = random.getChar(i);
+        for (int i = 1; i <= CANT_TERMINALES; i++) {
+            //Nombre de terminal
+            char nombre = random.getChar(i-1);
             //Puestos de la terminal
             int puestoMin = ((i - 1) * CANT_PUESTOS_EMBARQUE) + 1;
             int puestoMax = i * CANT_PUESTOS_EMBARQUE;
@@ -70,7 +72,7 @@ public class Controlador {
                 puestoMin++;
             }
             // creo la terminal y la agrego al arreglo
-            terminales[i] = new Terminal(nombre, puestos);
+            terminales[i-1] = new Terminal(nombre, puestos);
         }
 
         //RECEPCIONISTAS DEL PUESTO DE INFORME
