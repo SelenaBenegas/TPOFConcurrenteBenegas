@@ -14,20 +14,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Terminal {
 
     private int[] puestosEmbarque;
-   // private FreeShop tienda;
+    // private FreeShop tienda;
     private char letraTerminal;
-    //private final AtomicInteger hora;
+    private int numeroTerminal;
+    // private final AtomicInteger hora;
 
-    public Terminal(char letra, int[] puestos){
+    public Terminal(char letra, int numeroTerminal, int[] puestos) {
         this.letraTerminal = letra;
         this.puestosEmbarque = puestos;
+        this.numeroTerminal = numeroTerminal;
     }
 
-    public int[] getPuestos(){
+    public int[] getPuestos() {
         return this.puestosEmbarque;
     }
 
-    public char getLetra(){
+    public char getLetra() {
         return this.letraTerminal;
     }
+
+    public int getNumeroTerminal() {
+        return this.numeroTerminal;
     }
+}

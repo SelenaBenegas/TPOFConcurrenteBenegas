@@ -21,7 +21,7 @@ public class Aeropuerto {
     private int cantAerolineas;
     private int capPuestosAtencion;
     private int capFreeShop;
-    private int capTren;
+    private Tren tren;
     private PuestoInforme puestoI;
     private int horaActual = 400;
     private int diaActual = 1;
@@ -29,14 +29,12 @@ public class Aeropuerto {
     private Lock ingresarAeropuerto = new ReentrantLock();
     private Condition esperarPorLaHora = ingresarAeropuerto.newCondition();
 
-    public Aeropuerto(PuestoInforme puestoI, int cantAerolineas, int capPuestosAtencion, int capFreeShop, int capTren) {
+    public Aeropuerto(PuestoInforme puestoI, Tren tren, int cantAerolineas, int capPuestosAtencion, int capFreeShop) {
         this.cantAerolineas = cantAerolineas;
         this.capPuestosAtencion = capPuestosAtencion;
         this.capFreeShop = capFreeShop;
-        this.capTren = capTren;
         this.puestoI = puestoI;
-        // this.arrayPuestos = new PuestoAtencion[cantAerolineas]; // Hay un puesto de atención por cada aerolínea
-        //TODO crear las terminales
+        this.tren = tren;
     }
 
     public synchronized void actualizarHorario(int pasoTiempo) {
@@ -90,5 +88,9 @@ public class Aeropuerto {
 
     public PuestoInforme getPuestoInforme() {
         return this.puestoI;
+    }
+
+    public Tren getTren() {
+        return tren;
     }
 }

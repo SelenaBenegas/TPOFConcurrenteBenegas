@@ -21,7 +21,7 @@ public class PuestoAtencion {
 
     private ArrayBlockingQueue<Pasajero> colaPasajeros;
     private int id;
-    // Lock para bloquear a los pasajeros
+    // Lock para bloquear a los pasajeros que quieren hacer fila
     private Lock hacerFila = new ReentrantLock();
     private Condition espacioEnFila = hacerFila.newCondition();
     // Semáforo para la comunicación con el guardia
@@ -35,19 +35,24 @@ public class PuestoAtencion {
     public void hacerFila(Pasajero pasajero) throws InterruptedException {
         this.hacerFila.lock();
         try {
-            boolean success = colaPasajeros.offer(pasajero);
-            if (!success) {
+            boolean lugarFila = colaPasajeros.offer(pasajero);
+            if (!lugarFila) {
                 System.out.println("La fila está llena, " + pasajero.getNombre() + " espera en el Hall Central.");
             }
-            while (!success) {
+            while (!lugarFila) {
                 // Espera a que el guardia le diga que hay espacio
                 this.espacioEnFila.await();
-                success = colaPasajeros.offer(pasajero);
+                lugarFila = colaPasajeros.offer(pasajero);
+            }
+            System.out.println(pasajero.getNombre() + " está haciendo fila en el puesto de atención " + this.id);
+            // Bloquear al hilo del pasajero hasta que sea atendido
+            synchronized (pasajero) {
+                pasajero.wait();
             }
         } finally {
             this.hacerFila.unlock();
         }
-        System.out.println(pasajero.getNombre() + " está haciendo fila en el puesto de atención " + this.id);
+       
     }
 
     public void atender() throws InterruptedException {
@@ -58,6 +63,11 @@ public class PuestoAtencion {
         Terminal terminal = pasaje.getTerminal();
         int puestoE = pasaje.getPuestoEmbarque();
         System.out.println(Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", adios!");
+        // //Desbloquear el hilo cuando lo termina de atenderlo
+        synchronized (pasajero) {
+            pasajero.notify();
+        }
+        // Le avisa al guardia que avise a los pasajeros que hay lugar en la fila
         this.avisarPasajeros.release();
     }
 

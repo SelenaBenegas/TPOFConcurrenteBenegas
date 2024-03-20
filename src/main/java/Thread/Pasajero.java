@@ -8,6 +8,8 @@ import Otros.Pasaje;
 import Pasivos.Aeropuerto;
 import Pasivos.PuestoAtencion;
 import Pasivos.PuestoInforme;
+import Pasivos.Tren;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,20 +31,20 @@ public class Pasajero implements Runnable {
 
     public void run() {
         try {
-            //INGRESA AL AEROPUERTO SÓLO EN EL HORARIO DE ATENCIÓN
+            // INGRESA AL AEROPUERTO SÓLO EN EL HORARIO DE ATENCIÓN
             this.aeropuerto.ingresarAeropuerto();
-            
             // CUANDO INGRESA AL AEROPUERTO SE DIRIGE AL PUESTO DE INFORMES
             PuestoInforme puestoInformes = aeropuerto.getPuestoInforme();
             puestoInformes.consultar(this);
             // EN EL PUESTO DE INFORMES LE DAN EL PUESTO DE ATENCION
             PuestoAtencion puestoA = pasaje.getPuestoAtencion();
-            // Espera en el puesto de atencion
+            // INTENTA HACER FILA EN EL PUESTO DE ATENCION O SE QUEDA EN EL HALL CENTRAL
             puestoA.hacerFila(this);
-            
-            
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RecepcionistaInforme.class.getName()).log(Level.SEVERE, null, ex);
+            // UNA VEZ QUE REALIZA EL CHECK-IN, SE DIRIGE AL TREN
+            Tren tren = aeropuerto.getTren();
+            tren.viajarEnTren(this);
+        } catch (Exception ex) {
+            Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
