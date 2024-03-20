@@ -11,6 +11,7 @@ public class Tren {
    private int cantidadPasajerosEnTren = 0;
    private int[] cantidadPasajerosBajanTerminal;
    private Semaphore llevarPasajeros = new Semaphore(0);
+   private Semaphore mutex = new Semaphore(1);
    private Semaphore subirseTren;
    private Semaphore[] bajarseTerminal;
    private Semaphore[] pasarTerminal;
@@ -33,30 +34,31 @@ public class Tren {
    public void viajarEnTren(Pasajero pasajero) throws Exception {
       subirseTren.acquire();
       int numTerminal = pasajero.getPasaje().getTerminal().getNumeroTerminal();
-      synchronized (this) {
-         System.out.println(Thread.currentThread().getName() + " se sube al tren.");
-         cantidadPasajerosBajanTerminal[numTerminal]++;
-         cantidadPasajerosEnTren++;
-         if (cantidadPasajerosEnTren == capTren) {
+      mutex.acquire();
+      System.out.println(Thread.currentThread().getName() + " se sube al tren.");
+      cantidadPasajerosBajanTerminal[numTerminal]++;
+      cantidadPasajerosEnTren++;
+      if (cantidadPasajerosEnTren == capTren) {
          System.out.println(Thread.currentThread().getName() + " ANTES DE LlevarPasajeros.release().");
-            llevarPasajeros.release();
-         }
+         llevarPasajeros.release();
       }
+      mutex.release();
       bajarseTerminal[numTerminal].acquire();
-      synchronized (this) {
-         System.out.println(Thread.currentThread().getName() + " se baja del tren.");
-         cantidadPasajerosEnTren--;
-         cantidadPasajerosBajanTerminal[numTerminal]--;
-         if (cantidadPasajerosBajanTerminal[numTerminal] == 0) {
-            pasarTerminal[numTerminal].release();
-         }
+      mutex.acquire();
+      System.out.println(Thread.currentThread().getName() + " se baja del tren.");
+      cantidadPasajerosEnTren--;
+      cantidadPasajerosBajanTerminal[numTerminal]--;
+      if (cantidadPasajerosBajanTerminal[numTerminal] == 0) {
+         pasarTerminal[numTerminal].release();
       }
+      mutex.release();
    }
 
    public void llevarPasajeros() throws Exception {
-      Random letra = new Random(); //en realidad no es un random, quiero la letra de la terminal segun el indice
+      Random letra = new Random(); // en realidad no es un random, quiero la letra de la terminal segun el indice
       llevarPasajeros.acquire();
-      System.out.println("\u001B[36m" + Thread.currentThread().getName() + " comienza el viaje en tren. "  + "\u001B[0m");
+      System.out
+            .println("\u001B[36m" + Thread.currentThread().getName() + " comienza el viaje en tren. " + "\u001B[0m");
       for (int i = 0; i < cantTerminales; i++) {
          char letraTerminal = letra.getChar(i);
          System.out.println("\u001B[36m" + "Tren se dirige a la terminal: " + letraTerminal + "\u001B[0m");
@@ -64,7 +66,8 @@ public class Tren {
          System.out.println();
          synchronized (this) {
             if (cantidadPasajerosBajanTerminal[i] > 0) {
-               System.out.println("\u001B[36m" +"Bajan " + cantidadPasajerosBajanTerminal[i] + " pasajeros, en la terminal: " + letraTerminal + "\u001B[0m");
+               System.out.println("\u001B[36m" + "Bajan " + cantidadPasajerosBajanTerminal[i]
+                     + " pasajeros, en la terminal: " + letraTerminal + "\u001B[0m");
                bajarseTerminal[i].release(cantidadPasajerosBajanTerminal[i]);
                pasarTerminal[i].acquire();
             }
