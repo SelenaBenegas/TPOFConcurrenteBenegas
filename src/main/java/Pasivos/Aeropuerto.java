@@ -124,13 +124,14 @@ public class Aeropuerto {
         }
         return hora;
     }
-    
+
     public void tomarVuelo(int horaVuelo) throws InterruptedException {
         this.tomarVuelo.lock();
 
         try {
             if (horaActual != horaVuelo) {
-                System.out.println(Thread.currentThread().getName() + " esperando su vuelo a las " + horaVuelo / 100 + ":00 hs... y son las " + horaActual);
+
+                System.out.println(Thread.currentThread().getName() + " esperando su vuelo a las " + horaVuelo/100  + ":00 hs... y son las " + horaActual/100  + ":00 hs ...");
             }
             while (horaActual != horaVuelo) {
                 this.esperaVuelo.await();
@@ -138,7 +139,7 @@ public class Aeropuerto {
         } finally {
             this.tomarVuelo.unlock();
         }
-        System.out.println("\u001B[32m" + "\u001B[1m" + Thread.currentThread().getName() + " sale su vuelo." + "\u001B[0m"+ "\u001B[0m");
+        System.out.println("\u001B[32m" + "\u001B[1m" + Thread.currentThread().getName() + " sale su vuelo de las " + horaVuelo/100  + ":00 hs... y son las " + horaActual/100  + ":00 hs... ARRIVEDERCI!" + "\u001B[0m"+ "\u001B[0m");
 
     }
 
