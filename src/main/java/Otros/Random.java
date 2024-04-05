@@ -12,7 +12,7 @@ public class Random {
 
     private static final java.util.Random RANDOM = new java.util.Random();
     private static final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    //Las aerolíneas van a tener un nombre "Aerolíena + <cantidad de LONG_AEROLINEA> letras en mayusculas" 
+    //Las aerolíneas van a tener un nombre "Aerolíena + <cantidad de LONG_AEROLINEA> letras en mayusculas"
     private static final int LONG_AEROLINEA = 3;
 
     public Random() {
@@ -32,9 +32,9 @@ public class Random {
     }
 
     public int generarHora() { //Genera la hora de los vuelos
-        int min = 700; // una hora después de que abra el aeropuerto
-        int max = 2200; // una hora antes de que cierre el aeropuerto
-        return RANDOM.nextInt(max - min + 1) + min;
+        int min = 7; // una hora después de que abra el aeropuerto
+        int max = 22; // una hora antes de que cierre el aeropuerto
+        return (RANDOM.nextInt(max - min + 1) + min)*100;
     }
 
     public String generarNombreAerolinea() {
