@@ -1,14 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Thread;
 
 import Otros.Pasaje;
+import Otros.Random;
 import Pasivos.Aeropuerto;
+import Pasivos.Caja;
 import Pasivos.PuestoAtencion;
 import Pasivos.PuestoInforme;
+import Pasivos.Terminal;
 import Pasivos.Tren;
+import Pasivos.FreeShop;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +44,37 @@ public class Pasajero implements Runnable {
             // UNA VEZ QUE REALIZA EL CHECK-IN, SE DIRIGE AL TREN
             Tren tren = aeropuerto.getTren();
             tren.viajarEnTren(this);
+            // VERIFICA SI PUEDE INGRESAR AL FREESHOP O NO
+            Random random = new Random();
+            int horaActual = aeropuerto.getHoraActual();
+            int horaVuelo = this.pasaje.getHoraVuelo();
+            int horaCalculada = aeropuerto.calcularHora(horaActual, 3);
+            if (horaCalculada <= horaVuelo ) {  // && random.generarBoolean()
+                Terminal terminal = pasaje.getTerminal();
+                FreeShop freeshop = terminal.getFreeShop();
+                freeshop.entrarFreeShop(this);
+                // Simula tiempo que mira la tienda
+                System.out.println(this.nombre + " recorre el freshop de la terminal: " + terminal.getLetra());
+                Thread.sleep(random.generarIntRango(5000, 40000));
+                horaActual = aeropuerto.getHoraActual();
+                // VERIFICA SI TIENE TIEMPO PARA COMPRAR
+                horaCalculada = aeropuerto.calcularHora(horaActual, 1); //hora actual + 1 hora
+                if (horaCalculada <= horaVuelo ) { // && random.generarBoolean()
+                    System.out.println(this.nombre + " decide comprar en el freeshop.");
+                    Caja caja = freeshop.obtenerCaja();
+                    caja.entrarCaja(this);
+                    caja.salirCaja(this);
+                    Thread.sleep(random.generarIntRango(1000, 5000));
+                }
+                freeshop.salirFreeShop(this);
+            } else {
+                System.out.println(
+                        this.nombre + " NO va a comprar en el freshop de la terminal: "
+                                + pasaje.getTerminal().getLetra());
+            }
+            // Se va a su vuelo
+            this.aeropuerto.tomarVuelo(horaVuelo);
+
         } catch (Exception ex) {
             Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -51,6 +83,7 @@ public class Pasajero implements Runnable {
     public Pasaje getPasaje() {
         return this.pasaje;
     }
+
     public String getNombre() {
         return this.nombre;
     }

@@ -4,7 +4,6 @@
  */
 package Pasivos;
 
-import Otros.Aerolinea;
 import Otros.Pasaje;
 import Thread.Pasajero;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -29,7 +28,7 @@ public class PuestoAtencion {
 
     public PuestoAtencion(int id, int capMax) {
         this.id = id;
-        this.colaPasajeros = new ArrayBlockingQueue(capMax, true);
+        this.colaPasajeros = new ArrayBlockingQueue<Pasajero>(capMax, true);
     }
 
     public void hacerFila(Pasajero pasajero) throws InterruptedException {
@@ -57,12 +56,12 @@ public class PuestoAtencion {
 
     public void atender() throws InterruptedException {
         Pasajero pasajero = this.colaPasajeros.take();
-        System.out.println(Thread.currentThread().getName() + ": Hola! " + pasajero.getNombre() + ", realizaremos el chek-in.");
-        Thread.sleep(500);
+        System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Hola! " + pasajero.getNombre() + ", realizaremos el chek-in."+ "\u001B[0m");
+        Thread.sleep(2000);
         Pasaje pasaje = pasajero.getPasaje();
         Terminal terminal = pasaje.getTerminal();
         int puestoE = pasaje.getPuestoEmbarque();
-        System.out.println(Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", adios!");
+        System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", adios!"+ "\u001B[0m");
         // //Desbloquear el hilo cuando lo termina de atenderlo
         synchronized (pasajero) {
             pasajero.notify();
@@ -75,7 +74,7 @@ public class PuestoAtencion {
         this.avisarPasajeros.acquire();
         this.hacerFila.lock();
         try {
-            System.out.println(Thread.currentThread().getName() + ": Hay espacio en la fila!");
+            System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Hay espacio en la fila!"+ "\u001B[0m");
             this.espacioEnFila.signalAll();
         } finally {
             this.hacerFila.unlock();

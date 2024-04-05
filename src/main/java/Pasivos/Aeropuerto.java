@@ -1,11 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Pasivos;
 
 import Thread.RecepcionistaInforme;
-import java.util.Random;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,64 +15,76 @@ import java.util.logging.Logger;
  */
 public class Aeropuerto {
 
-    private int cantAerolineas;
-    private int capPuestosAtencion;
-    private int capFreeShop;
     private Tren tren;
     private PuestoInforme puestoI;
     private int horaActual = 400;
-    private int diaActual = 1;
-    private boolean atendiendo = false; // Bandera para indicar si el aeropuerto se encuentra o no en horario de atencion
+    private Semaphore mutexReloj = new Semaphore(1);
+    private boolean atendiendo = false; // Bandera para indicar si el aeropuerto se encuentra o no en horario de
+                                        // atencion
     private Lock ingresarAeropuerto = new ReentrantLock();
-    private Condition esperarPorLaHora = ingresarAeropuerto.newCondition();
+    private Lock tomarVuelo = new ReentrantLock();
+    private Condition esperaIngresar = ingresarAeropuerto.newCondition();
+    private Condition esperaVuelo = tomarVuelo.newCondition();
 
-    public Aeropuerto(PuestoInforme puestoI, Tren tren, int cantAerolineas, int capPuestosAtencion, int capFreeShop) {
-        this.cantAerolineas = cantAerolineas;
-        this.capPuestosAtencion = capPuestosAtencion;
-        this.capFreeShop = capFreeShop;
+    public Aeropuerto(PuestoInforme puestoI, Tren tren) {
         this.puestoI = puestoI;
         this.tren = tren;
     }
 
     public synchronized void actualizarHorario(int pasoTiempo) {
-        if (this.horaActual == 2300) {
-            this.diaActual++;
-            this.horaActual = 0;
-            System.out.println("Dia: " + this.diaActual + " - Hora: 00:00 hs");
-        } else {
-            this.horaActual += pasoTiempo;
-            System.out.println("Dia: " + this.diaActual + " - Hora: " + this.horaActual / 100 + ":00 hs");
-            switch (this.horaActual) {
-                // El aeropuerto tiene que abrir a las 6
-                case 600:
-                    System.out.println("\u001B[32m" +"\"VIAJE BONITO\" COMIENZA SU HORARIO DE ATENCIÓN." + "\u001B[0m");
-                    this.ingresarAeropuerto.lock();
-                    atendiendo = true;
-                    try {
-                        this.esperarPorLaHora.signalAll();
-                    } finally {
-                        this.ingresarAeropuerto.unlock();
-                    }
-                    break;
-                // El aeropuerto cierra a las 22
-                case 2200:
-                    System.out.println("\u001B[31m" +"\"VIAJE BONITO\" FINALIZA SU HORARIO DE ATENCIÓN."+ "\u001B[0m");
-                    atendiendo = false;
-                    break;
-                default:
-                    break;
+        try {
+            mutexReloj.acquire();
+            if (this.horaActual == 2300) {
+                this.horaActual = 0;
+                System.out.println("\u001B[1m" + "Hora: 00:00 hs" + "\u001B[0m");
+            } else {
+                this.horaActual += pasoTiempo;
+                System.out.println("\u001B[1m" + "Hora: " + this.horaActual / 100 + ":00 hs" + "\u001B[0m");
+                switch (this.horaActual) {
+                    // El aeropuerto tiene que abrir a las 6
+                    case 600:
+                        System.out.println(
+                                "\u001B[32m" + "\"VIAJE BONITO\" COMIENZA SU HORARIO DE ATENCIÓN." + "\u001B[0m");
+                        this.ingresarAeropuerto.lock();
+                        atendiendo = true;
+                        try {
+                            this.esperaIngresar.signalAll();
+                        } finally {
+                            this.ingresarAeropuerto.unlock();
+                        }
+                        break;
+                    // El aeropuerto cierra a las 22
+                    case 2200:
+                        System.out.println(
+                                "\u001B[31m" + "\"VIAJE BONITO\" FINALIZA SU HORARIO DE ATENCIÓN." + "\u001B[0m");
+                        atendiendo = false;
+                        break;
+                    default:
+                        break;
+                }
             }
+            this.tomarVuelo.lock();
+            try {
+                this.esperaVuelo.signalAll();
+            } finally {
+                this.tomarVuelo.unlock();
+            }
+            mutexReloj.release();
+            this.notifyAll();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        this.notifyAll();
     }
 
     public void ingresarAeropuerto() {
         this.ingresarAeropuerto.lock();
         try {
             while (!atendiendo) {
-                System.out.println(Thread.currentThread().getName() + " no pudo ingresar al aeropuerto porque esta cerrado");
+                System.out.println(
+                        Thread.currentThread().getName() + " no pudo ingresar al aeropuerto porque esta cerrado");
                 try {
-                    this.esperarPorLaHora.await();
+                    this.esperaIngresar.await();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(RecepcionistaInforme.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -91,6 +100,46 @@ public class Aeropuerto {
     }
 
     public Tren getTren() {
-        return tren;
+        return this.tren;
     }
+
+    public int getHoraActual() {
+        int hora = 0;
+        try {
+            mutexReloj.acquire();
+            hora = this.horaActual;
+            mutexReloj.release();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return hora;
+    }
+
+    public int calcularHora(int horaActual, int cant) {
+        int hora = horaActual + cant * 100;
+        hora = hora % 2400;
+        if (hora == 0) {
+            hora = 2400;
+        }
+        return hora;
+    }
+    
+    public void tomarVuelo(int horaVuelo) throws InterruptedException {
+        this.tomarVuelo.lock();
+
+        try {
+            if (horaActual != horaVuelo) {
+                System.out.println(Thread.currentThread().getName() + " esperando su vuelo a las " + horaVuelo / 100 + ":00 hs... y son las " + horaActual);
+            }
+            while (horaActual != horaVuelo) {
+                this.esperaVuelo.await();
+            }
+        } finally {
+            this.tomarVuelo.unlock();
+        }
+        System.out.println("\u001B[32m" + "\u001B[1m" + Thread.currentThread().getName() + " sale su vuelo." + "\u001B[0m"+ "\u001B[0m");
+
+    }
+
 }

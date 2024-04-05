@@ -45,4 +45,9 @@ public class Random {
         }
         return "AEROLÍNEA '" + sb.toString() + "'";
     }
+
+    public boolean generarBoolean() {
+        return RANDOM.nextBoolean();
+    }
+
 }

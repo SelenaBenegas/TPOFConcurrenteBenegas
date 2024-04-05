@@ -36,16 +36,17 @@ public class Tren {
       int numTerminal = pasajero.getPasaje().getTerminal().getNumeroTerminal();
       mutex.acquire();
       System.out.println(Thread.currentThread().getName() + " se sube al tren.");
+      Thread.sleep(1000);
       cantidadPasajerosBajanTerminal[numTerminal]++;
       cantidadPasajerosEnTren++;
       if (cantidadPasajerosEnTren == capTren) {
-         System.out.println(Thread.currentThread().getName() + " ANTES DE LlevarPasajeros.release().");
          llevarPasajeros.release();
       }
       mutex.release();
       bajarseTerminal[numTerminal].acquire();
       mutex.acquire();
       System.out.println(Thread.currentThread().getName() + " se baja del tren.");
+      Thread.sleep(1000);
       cantidadPasajerosEnTren--;
       cantidadPasajerosBajanTerminal[numTerminal]--;
       if (cantidadPasajerosBajanTerminal[numTerminal] == 0) {
@@ -58,12 +59,11 @@ public class Tren {
       Random letra = new Random(); // en realidad no es un random, quiero la letra de la terminal segun el indice
       llevarPasajeros.acquire();
       System.out
-            .println("\u001B[36m" + Thread.currentThread().getName() + " comienza el viaje en tren. " + "\u001B[0m");
+            .println("\n \u001B[36m" + Thread.currentThread().getName() + " comienza el viaje en tren. " + "\u001B[0m \n");
       for (int i = 0; i < cantTerminales; i++) {
          char letraTerminal = letra.getChar(i);
          System.out.println("\u001B[36m" + "Tren se dirige a la terminal: " + letraTerminal + "\u001B[0m");
-         Thread.sleep(10);
-         System.out.println();
+         Thread.sleep(10000);
          synchronized (this) {
             if (cantidadPasajerosBajanTerminal[i] > 0) {
                System.out.println("\u001B[36m" + "Bajan " + cantidadPasajerosBajanTerminal[i]
@@ -74,8 +74,8 @@ public class Tren {
          }
 
       }
-      System.out.println("\u001B[36m" + "Tren termina el recorrido y vuelve. \u001B[0m");
-      Thread.sleep(10 * cantTerminales);
+      System.out.println(" \n \u001B[36m" + "Tren termina el recorrido y vuelve. \u001B[0m \n");
+      Thread.sleep(10000 * cantTerminales);
       System.out.println("\u001B[36m" + "Tren permite a los pasajeros subirse. \u001B[0m");
       subirseTren.release(capTren);
    }

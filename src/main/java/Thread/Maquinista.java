@@ -1,8 +1,5 @@
 package Thread;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import Pasivos.Tren;
 
 public class Maquinista implements Runnable {

@@ -44,8 +44,9 @@ public class PuestoInforme {
         PuestoAtencion puestoA = aerolinea.getPuestoAtencion();
         pasaje.setPuestoAtencion(puestoA);
         Thread.sleep(500);
-        System.out.println(Thread.currentThread().getName() + ": Hola! " + pasajero.getNombre() + " su puesto de atención es el " + puestoA.getId());
-        //Desbloquear el hilo cuando lo tomo
+        System.out.println("\u001B[33m" + Thread.currentThread().getName() + ": Hola! " + pasajero.getNombre()
+                + " su puesto de atención es el " + puestoA.getId() + "\u001B[0m");
+        // Desbloquear el hilo cuando lo tomo
         synchronized (pasajero) {
             pasajero.notify();
         }

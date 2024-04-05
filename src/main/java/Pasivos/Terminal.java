@@ -1,11 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Pasivos;
-
-import Pasivos.FreeShop;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -14,15 +7,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Terminal {
 
     private int[] puestosEmbarque;
-    // private FreeShop tienda;
+    private FreeShop freeShop;
     private char letraTerminal;
     private int numeroTerminal;
-    // private final AtomicInteger hora;
-
-    public Terminal(char letra, int numeroTerminal, int[] puestos) {
+    
+    public Terminal(char letra, int numeroTerminal, int[] puestos, FreeShop freeShop) {
         this.letraTerminal = letra;
         this.puestosEmbarque = puestos;
         this.numeroTerminal = numeroTerminal;
+        this.freeShop = freeShop;
     }
 
     public int[] getPuestos() {
@@ -36,4 +29,9 @@ public class Terminal {
     public int getNumeroTerminal() {
         return this.numeroTerminal;
     }
+
+    public FreeShop getFreeShop() {
+        return this.freeShop;
+    }
+
 }
