@@ -1,10 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package Pasivos;
 
 import Otros.Pasaje;
+import Otros.Terminal;
 import Thread.Pasajero;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -59,9 +57,10 @@ public class PuestoAtencion {
         System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Hola! " + pasajero.getNombre() + ", realizaremos el chek-in."+ "\u001B[0m");
         Thread.sleep(2000);
         Pasaje pasaje = pasajero.getPasaje();
+        String aerolinea = pasaje.getAerolinea().getNombre();
         Terminal terminal = pasaje.getTerminal();
         int puestoE = pasaje.getPuestoEmbarque();
-        System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", adios!"+ "\u001B[0m");
+        System.out.println("\u001B[34m" + Thread.currentThread().getName() + ": Listo " + pasajero.getNombre() + ", dirigase al puerto " + puestoE + " de la terminal: " + terminal.getLetra() + ", gracias por elegir a " + aerolinea + "! \u001B[0m");
         // //Desbloquear el hilo cuando lo termina de atenderlo
         synchronized (pasajero) {
             pasajero.notify();

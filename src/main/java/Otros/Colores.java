@@ -1,6 +1,6 @@
 package Otros;
 
-public class Colores {
+public class Colores { // Esto es sólo decorativo
 
     public static void main(String[] args) {
         System.out.println("\u001B[30m" + " = NEGRO");

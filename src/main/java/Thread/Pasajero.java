@@ -3,11 +3,11 @@ package Thread;
 
 import Otros.Pasaje;
 import Otros.Random;
+import Otros.Terminal;
 import Pasivos.Aeropuerto;
 import Pasivos.Caja;
 import Pasivos.PuestoAtencion;
 import Pasivos.PuestoInforme;
-import Pasivos.Terminal;
 import Pasivos.Tren;
 import Pasivos.FreeShop;
 

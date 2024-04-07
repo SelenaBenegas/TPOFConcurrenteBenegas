@@ -9,6 +9,7 @@ public class Tren {
    private int capTren;
    private int cantTerminales;
    private int cantidadPasajerosEnTren = 0;
+   private int cantidadFaltanSubir = 0;
    private int[] cantidadPasajerosBajanTerminal;
    private Semaphore llevarPasajeros = new Semaphore(0);
    private Semaphore mutex = new Semaphore(1);
@@ -16,10 +17,11 @@ public class Tren {
    private Semaphore[] bajarseTerminal;
    private Semaphore[] pasarTerminal;
 
-   public Tren(int capTren, int cantTerminales) {
+   public Tren(int capTren, int cantTerminales, int cantTotalPasajeros) {
       this.capTren = capTren;
       this.subirseTren = new Semaphore(capTren);
       this.cantTerminales = cantTerminales;
+      this.cantidadFaltanSubir = cantTotalPasajeros;
       this.cantidadPasajerosBajanTerminal = new int[cantTerminales];
       this.bajarseTerminal = new Semaphore[cantTerminales];
       this.pasarTerminal = new Semaphore[cantTerminales];
@@ -39,7 +41,8 @@ public class Tren {
       Thread.sleep(1000);
       cantidadPasajerosBajanTerminal[numTerminal]++;
       cantidadPasajerosEnTren++;
-      if (cantidadPasajerosEnTren == capTren) {
+      cantidadFaltanSubir--;
+      if (cantidadPasajerosEnTren == capTren || cantidadFaltanSubir == 0 ) {
          llevarPasajeros.release();
       }
       mutex.release();

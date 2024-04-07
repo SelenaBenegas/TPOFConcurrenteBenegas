@@ -4,6 +4,7 @@ package Controlador;
 import Otros.Aerolinea;
 import Otros.Pasaje;
 import Otros.Random;
+import Otros.Terminal;
 import Pasivos.Aeropuerto;
 import Pasivos.Caja;
 import Pasivos.FreeShop;
@@ -11,7 +12,6 @@ import Thread.Pasajero;
 import Thread.Reloj;
 import Pasivos.PuestoAtencion;
 import Pasivos.PuestoInforme;
-import Pasivos.Terminal;
 import Pasivos.Tren;
 import Thread.Cajera;
 import Thread.Guardia;
@@ -46,7 +46,7 @@ public class Controlador {
     // Cantidad de cajas del freeshop
     private static final int CANT_CAJAS = 2;
     // Capacidad máxima del tren
-    private static final int CAP_TREN = 5;
+    private static final int CAP_TREN = 3;
     // Cantidad de pasajeros que ingresan al aeropuerto
     private static final int CANT_PASAJEROS = 10;
     // Random
@@ -55,7 +55,7 @@ public class Controlador {
     public static void main(String[] args) {
         PuestoInforme puestoI = new PuestoInforme();
         // TREN
-        Tren tren = new Tren(CAP_TREN, CANT_TERMINALES);
+        Tren tren = new Tren(CAP_TREN, CANT_TERMINALES, CANT_PASAJEROS);
         // MAQUINISTA (conductor del tren)
         Maquinista m = new Maquinista(tren);
         Thread maquinista = new Thread(m, "Maquinista");

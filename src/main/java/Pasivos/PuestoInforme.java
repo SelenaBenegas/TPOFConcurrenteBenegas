@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Pasivos;
 
 import Otros.Aerolinea;
 import Otros.Pasaje;
 import Thread.Pasajero;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +13,8 @@ import java.util.logging.Logger;
  */
 public class PuestoInforme {
 
-    private BlockingQueue<Pasajero> colaPasajeros;
+
+    private LinkedBlockingQueue<Pasajero> colaPasajeros;
 
     public PuestoInforme() {
         this.colaPasajeros = new LinkedBlockingQueue<>();

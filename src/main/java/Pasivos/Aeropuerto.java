@@ -19,8 +19,7 @@ public class Aeropuerto {
     private PuestoInforme puestoI;
     private int horaActual = 400;
     private Semaphore mutexReloj = new Semaphore(1);
-    private boolean atendiendo = false; // Bandera para indicar si el aeropuerto se encuentra o no en horario de
-                                        // atencion
+    private boolean atendiendo = false; // Bandera para indicar si el aeropuerto se encuentra o no en horario de atencion
     private Lock ingresarAeropuerto = new ReentrantLock();
     private Lock tomarVuelo = new ReentrantLock();
     private Condition esperaIngresar = ingresarAeropuerto.newCondition();
